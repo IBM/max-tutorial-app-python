@@ -1,0 +1,5 @@
+Flask
+requests
+numpy
+opencv-python
+flake8
