@@ -1,6 +1,6 @@
 # MAX Object Detector Web App (Lite)
 
-A slimmed down version of the [MAX Object Detector Web App](https://github.com/IBM/MAX-Object-Detector-Web-App) for use in MAX workshops
+A slimmed down python version of the [MAX Object Detector Web App](https://github.com/IBM/MAX-Object-Detector-Web-App) for use in MAX workshops
 
 # Steps
 
