@@ -42,6 +42,26 @@ def image_resize(img_array):
     return img_resize, img_height, img_width
 
 
+def draw_label_box(prediction, image, img_width, img_height):
+    """Draw the given label and bounding box on the given image"""
+    label = prediction['label']
+    ymin, xmin, ymax, xmax = prediction['detection_box']
+    (left, right, top, bottom) = (int(xmin * img_width),
+                                  int(xmax * img_width),
+                                  int(ymin * img_height),
+                                  int(ymax * img_height))
+
+    font = cv2.FONT_HERSHEY_DUPLEX
+    text_width, text_height = cv2.getTextSize(label, font, 0.8, 1)[0]
+
+    cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
+    cv2.rectangle(image, (left, top),
+                  (left + text_width, top + int(text_height * 1.4)),
+                  (0, 255, 0), -1)
+    cv2.putText(image, label, (left, top + text_height),
+                font, 0.8, (0, 0, 0), 1)
+
+
 @app.route('/', methods=['POST', 'GET'])
 def root():
 
@@ -55,13 +75,13 @@ def root():
 
         # get file details
         file_data = request.files['file']
-        # file_name = file_data.filename
-        # read images from string data
+        # read image from string data
         file_request = file_data.read()
         # convert string data to numpy array
         np_inp_image = np.fromstring(file_request, np.uint8)
         # convert numpy array to image
         img = cv2.imdecode(np_inp_image, cv2.IMREAD_UNCHANGED)
+        # resize image to consistent size
         (image_processed,
          img_processed_height,
          img_processed_width) = image_resize(img)
@@ -87,23 +107,8 @@ def root():
         else:
             # draw the labels and bounding boxes on the image
             for i in range(len(result)):
-                label = result[i]['label']
-                ymin, xmin, ymax, xmax = result[i]['detection_box']
-                (left, right, top, bottom) = (int(xmin * img_processed_width),
-                                              int(xmax * img_processed_width),
-                                              int(ymin * img_processed_height),
-                                              int(ymax * img_processed_height))
-
-                font = cv2.FONT_HERSHEY_DUPLEX
-                txt_width, txt_height = cv2.getTextSize(label, font, 0.8, 1)[0]
-
-                cv2.rectangle(image_processed, (left, top),
-                              (right, bottom), (0, 255, 0), 2)
-                cv2.rectangle(image_processed, (left, top),
-                              (left + txt_width, top + int(txt_height * 1.4)),
-                              (0, 255, 0), -1)
-                cv2.putText(image_processed, label, (left, top + txt_height),
-                            font, 0.8, (0, 0, 0), 1)
+                draw_label_box(result[i], image_processed,
+                               img_processed_width, img_processed_height)
 
             # save the output image to return
             file_name = (str(randint(0, 999999)) + '.jpg')

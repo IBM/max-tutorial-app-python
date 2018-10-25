@@ -1,6 +1,10 @@
-# MAX Object Detector Web App (Lite)
+[![Build Status](https://travis-ci.org/CODAIT/max-workshop-app-python.svg?branch=master)](https://travis-ci.org/CODAIT/max-workshop-app-python)
 
-A slimmed down python version of the [MAX Object Detector Web App](https://github.com/IBM/MAX-Object-Detector-Web-App) for use in MAX workshops
+# MAX Object Detector Web App (Lite) - Python
+
+A simplified python version of the [MAX Object Detector Web App](https://github.com/IBM/MAX-Object-Detector-Web-App) for use in MAX workshops
+
+> This is the python version of this Web App, you can also check out the [NodeJS version](https://github.com/CODAIT/max-workshop-app-nodejs)
 
 # Steps
 
@@ -16,6 +20,8 @@ A slimmed down python version of the [MAX Object Detector Web App](https://githu
 1. [Get a local copy of the repository](#1-get-a-local-copy-of-the-repository)
 2. [Install dependencies](#2-install-dependencies)
 3. [Start the web app server](#3-start-the-web-app-server)
+4. [Configure ports (Optional)](#4-configure-ports-optional)
+5. [Try out the full version (Optional)](#5-try-out-the-full-version-optional)
 
 ### Start the Model API
 
@@ -111,6 +117,8 @@ $ cd max-workshop-app-python
 
 #### 2. Install dependencies
 
+Before running this web app you must install its dependencies:
+
 ```
 $ pip install -r requirements.txt
 ```
@@ -120,10 +128,26 @@ $ pip install -r requirements.txt
 You then start the web app by running:
 
 ```
-$ python app_master.py
+$ python app.py
 ```
 
-You can then access the web app at: [`http://localhost:8000`](http://localhost:8000)
+You can then access the web app at: [`http://localhost:8090`](http://localhost:8090)
+
+#### 4. Configure ports (Optional)
+
+If you want to use a different port or are running the model API at a different location you can change them with command-line options:
+
+```
+$ python app.py --port=[new port] --model=[endpoint url including protocol and port]
+```
+
+#### 5. Try out the full version (Optional)
+
+The latest release of the full web app is deployed with the model API above and is available at [`http://localhost:5000/app`](http://localhost:5000/app).
+
+The full version includes more features like filtering the detected objects based on their labels or a threshold for the prediction accuracy.
+
+> NOTE: The full version is written in NodeJS not Python and will have slight differences in the UI
 
 # Links
 
