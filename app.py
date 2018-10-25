@@ -116,7 +116,7 @@ def root():
             cv2.imwrite(output_name, image_processed)
 
         return render_template("index.html", image_name=output_name)
-                             
+
     else:
         # on GET return index.html
         return render_template("index.html")
