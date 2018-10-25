@@ -111,10 +111,8 @@ $ cd max-workshop-app-python
 
 #### 2. Install dependencies
 
-
-
 ```
-$ npm install
+$ pip install -r requirements.txt
 ```
 
 #### 3. Start the web app server
