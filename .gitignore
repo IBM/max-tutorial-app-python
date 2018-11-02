@@ -1,0 +1,7 @@
+# PyCharm
+.idea/
+
+# Mac
+.DS_Store
+
+static/img/temp/*
