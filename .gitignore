@@ -3,3 +3,5 @@
 
 # Mac
 .DS_Store
+
+static/img/temp/*
