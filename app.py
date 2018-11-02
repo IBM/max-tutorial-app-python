@@ -33,6 +33,7 @@ args = parser.parse_args()
 
 app = Flask(__name__)
 
+
 def image_resize(img_array):
     """Resize the image for processing"""
     height, width, _ = np.shape(img_array)
@@ -75,7 +76,8 @@ def root():
         # get file details
         file_data = request.files.get('file')
         if file_data is None:
-           return render_template("index.html", error_msg='No input image was provided.')
+            return render_template("index.html",
+                                   error_msg='No input image was provided.')
 
         # read image from string data
         file_request = file_data.read()
@@ -96,7 +98,7 @@ def root():
             'image': image_encoded.tostring(),
             'Content-Type': 'multipart/form-data',
         }
- 
+
         # Optional inference parameter: threshold (default: 0.7, range [0,1])
         data = {'threshold': '0.5'}
 
@@ -106,13 +108,20 @@ def root():
         # Send image file form to inference endpoint for prediction
 
         try:
-           results = requests.post(url=inference_url, files=files, data=data)
+            results = requests.post(url=inference_url, files=files, data=data)
         except Exception as e:
-           print('Inference request {} failed: {}'.format(inference_url, str(e)))
-           return render_template("index.html", error_msg='Inference request {} failed: Check log for details.'.format(inference_url))   
+            print('Inference request {} failed: {}'.format(inference_url,
+                                                           str(e)))
+            return render_template("index.html",
+                                   error_msg='Inference request {} failed: ' +
+                                   'Check log for details.'
+                                   .format(inference_url))
 
         if results.status_code != 200:
-           return render_template("index.html", error_msg='Inference request returned status code {} and message {}'.format(results.status_code, results.text))
+            return render_template("index.html",
+                                   error_msg='Inference request returned ' +
+                                   'status code {} and message {}'
+                                   .format(results.status_code, results.text))
 
         # extract prediction from json return
         output_data = results.json()
