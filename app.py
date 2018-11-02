@@ -20,6 +20,7 @@ import requests
 import cv2
 import numpy as np
 import os
+import pprint
 import glob
 from random import randint
 
@@ -125,7 +126,13 @@ def root():
 
         # extract prediction from json return
         output_data = results.json()
-        result = output_data['predictions']
+
+        # debug output only
+        pprint.pprint(output_data)
+
+        result = []
+        # TODO T2: uncomment next line and replace placeholder
+        result = output_data['**TODO**']
 
         if len(result) == 0:
             msg = "No objects detected, try uploading a new image"
