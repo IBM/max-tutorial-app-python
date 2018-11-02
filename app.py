@@ -33,7 +33,6 @@ args = parser.parse_args()
 
 app = Flask(__name__)
 
-
 def image_resize(img_array):
     """Resize the image for processing"""
     height, width, _ = np.shape(img_array)
@@ -74,7 +73,10 @@ def root():
     if request.method == 'POST':
 
         # get file details
-        file_data = request.files['file']
+        file_data = request.files.get('file')
+        if file_data is None:
+           return render_template("index.html", error_msg='No input image was provided.')
+
         # read image from string data
         file_request = file_data.read()
         # convert string data to numpy array
@@ -87,21 +89,36 @@ def root():
          img_processed_width) = image_resize(img)
         # encode image
         _, image_encoded = cv2.imencode('.jpg', img)
-        # send this as an input for prediction
-        my_files = {
+
+        # TODO R1: review inference request payload
+        # Required inference parameter: image (JPG/PNG encoded)
+        files = {
             'image': image_encoded.tostring(),
             'Content-Type': 'multipart/form-data',
-            'accept': 'application/json'
         }
+ 
+        # Optional inference parameter: threshold (default: 0.7, range [0,1])
+        data = {'threshold': '0.5'}
 
-        model = args.ml_endpoint.rstrip('/') + '/model/predict?threshold=0.5'
-        results = requests.post(url=model, files=my_files)
+        # TODO T1: replace inference URL placeholder
+        inference_url = args.ml_endpoint.rstrip('/') + '**TODO**'
+
+        # Send image file form to inference endpoint for prediction
+
+        try:
+           results = requests.post(url=inference_url, files=files, data=data)
+        except Exception as e:
+           print('Inference request {} failed: {}'.format(inference_url, str(e)))
+           return render_template("index.html", error_msg='Inference request {} failed: Check log for details.'.format(inference_url))   
+
+        if results.status_code != 200:
+           return render_template("index.html", error_msg='Inference request returned status code {} and message {}'.format(results.status_code, results.text))
 
         # extract prediction from json return
         output_data = results.json()
         result = output_data['predictions']
 
-        if len(result) <= 0:
+        if len(result) == 0:
             msg = "No objects detected, try uploading a new image"
             return render_template("index.html", error_msg=msg)
         else:
