@@ -82,8 +82,9 @@ def root():
         # get file details
         file_data = request.files.get('file')
         if file_data is None:
-            return render_template('index.html',
-                                   error_msg='No input image was provided.')
+            err_msg = 'No input image was provided.'
+            logging.error(err_msg)
+            return render_template('index.html', error_msg=err_msg)
 
         # read image from string data
         file_request = file_data.read()
