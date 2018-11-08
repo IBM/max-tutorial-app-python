@@ -97,9 +97,9 @@ def root():
             (image_processed,
              img_processed_height,
              img_processed_width) = image_resize(img)
-        except Exception:
+        except Exception as e:
             err_msg = 'Error processing image, try uploading a different image'
-            logging.error(err_msg)
+            logging.error(str(e))
             return render_template('index.html', error_msg=err_msg)
 
         # encode image
