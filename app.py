@@ -98,6 +98,7 @@ def root():
              img_processed_width) = image_resize(img)
         except Exception:
             err_msg = 'Error processing image, try uploading a different image'
+            logging.error(err_msg)
             return render_template('index.html', error_msg=err_msg)
 
         # encode image
@@ -125,10 +126,11 @@ def root():
 
         # surface any prediction errors to user
         if results.status_code != 200:
-            err_msg_template = ('Prediction request returned ' +
-                                'status code {} and message {}')
-            return render_template('index.html', error_msg=err_msg_template
-                                   .format(results.status_code, results.text))
+            err_msg = ('Prediction request returned status code {} '
+                       + 'and message {}').format(results.status_code,
+                                                  results.text)
+            logging.error(err_msg)
+            return render_template('index.html', error_msg=err_msg)
 
         # extract prediction from json return
         output_data = results.json()
