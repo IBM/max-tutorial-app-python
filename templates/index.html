@@ -19,10 +19,10 @@ limitations under the License.
 <head>
     <title>MAX Object Detector (Lite)</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
+    <link rel="shortcut icon" type="image/x-icon" href="static/favicon.ico"/>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/webapp.css') }}">
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/webapp.css">
 
 </head>
 
@@ -53,9 +53,9 @@ limitations under the License.
                          <div class="panel-body">
                             <form id="file-upload" enctype="multipart/form-data" method=POST >
                                 <div class="form-group">
-                                     <input id="file-input" type="file" name="file" accept=".png, .jpg, .jpeg, .gif" />
+                                     <input id="file-input" type="file" name="file" accept=".png, .jpg, .jpeg" />
                                 </div>
-                                <button id="file-submit" type="submit" class="btn btn-primary">Submit</button>
+                                <button id="file-submit" type="submit" class="btn btn-primary">Detect objects</button>
                             </form>
                          </div>
                      </div>
@@ -66,12 +66,10 @@ limitations under the License.
 
         <div class='row'>
             <div class="col-md-12 img-body">
-                <img src="{{ image_name }}" alt="{{ error_msg }}"  />
+                <img src="{{ image_name }}" alt="" />
+                <div><b>{{ error_msg }}</b></div>
             </div>
         </div>
-
-
-
 
         <footer class="footer">
             <hr/>

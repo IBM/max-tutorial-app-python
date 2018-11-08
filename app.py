@@ -18,10 +18,15 @@ from flask import Flask, render_template, request
 import argparse
 import requests
 import cv2
+import logging
 import numpy as np
 import os
 import glob
+from pprint import pformat
 from random import randint
+
+# setup logging
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
 # parse port and model endpoint args
 parser = argparse.ArgumentParser(description='MAX Object Detector (Lite)')
@@ -35,7 +40,8 @@ app = Flask(__name__)
 
 
 def image_resize(img_array):
-    """Resize the image for processing"""
+    """Resize the image before processing. This is required for consistency
+    since the bounding box and label are drawn relative to the image size."""
     height, width, _ = np.shape(img_array)
     img_resize = cv2.resize(img_array, (1024, int(1024 * height / width)))
     img_height, img_width, _ = np.shape(img_resize)
@@ -74,36 +80,67 @@ def root():
     if request.method == 'POST':
 
         # get file details
-        file_data = request.files['file']
+        file_data = request.files.get('file')
+        if file_data is None:
+            return render_template('index.html',
+                                   error_msg='No input image was provided.')
+
         # read image from string data
         file_request = file_data.read()
         # convert string data to numpy array
         np_inp_image = np.fromstring(file_request, np.uint8)
         # convert numpy array to image
         img = cv2.imdecode(np_inp_image, cv2.IMREAD_UNCHANGED)
-        # resize image to consistent size
-        (image_processed,
-         img_processed_height,
-         img_processed_width) = image_resize(img)
+        try:
+            # resize image to consistent size
+            (image_processed,
+             img_processed_height,
+             img_processed_width) = image_resize(img)
+        except Exception:
+            err_msg = 'Error processing image, try uploading a different image'
+            return render_template('index.html', error_msg=err_msg)
+
         # encode image
         _, image_encoded = cv2.imencode('.jpg', img)
-        # send this as an input for prediction
-        my_files = {
+
+        # Required inference request parameter: image (JPG/PNG encoded)
+        files = {
             'image': image_encoded.tostring(),
             'Content-Type': 'multipart/form-data',
-            'accept': 'application/json'
         }
 
-        model = args.ml_endpoint.rstrip('/') + '/model/predict?threshold=0.5'
-        results = requests.post(url=model, files=my_files)
+        # Optional inference parameter: threshold (default: 0.7, range [0,1])
+        data = {'threshold': '0.5'}
+
+        model_url = args.ml_endpoint.rstrip('/') + '/model/predict'
+
+        # Send image file form to model endpoint for prediction
+        try:
+            results = requests.post(url=model_url, files=files, data=data)
+        except Exception as e:
+            err_msg_temp = 'Prediction request to {} failed: {}'
+            err_msg = err_msg_temp.format(model_url, 'Check log for details.')
+            logging.error(err_msg_temp.format(model_url, str(e)))
+            return render_template("index.html", error_msg=err_msg)
+
+        # surface any prediction errors to user
+        if results.status_code != 200:
+            err_msg_template = ('Prediction request returned ' +
+                                'status code {} and message {}')
+            return render_template('index.html', error_msg=err_msg_template
+                                   .format(results.status_code, results.text))
 
         # extract prediction from json return
         output_data = results.json()
+
+        # log output in debug
+        logging.debug('\n' + pformat(output_data))
+
         result = output_data['predictions']
 
-        if len(result) <= 0:
-            msg = "No objects detected, try uploading a new image"
-            return render_template("index.html", error_msg=msg)
+        if len(result) == 0:
+            msg = 'No objects detected, try uploading a new image'
+            return render_template('index.html', error_msg=msg)
         else:
             # draw the labels and bounding boxes on the image
             for i in range(len(result)):
@@ -115,11 +152,11 @@ def root():
             output_name = output_folder + '/' + file_name
             cv2.imwrite(output_name, image_processed)
 
-        return render_template("index.html", image_name=output_name)
+        return render_template('index.html', image_name=output_name)
 
     else:
         # on GET return index.html
-        return render_template("index.html")
+        return render_template('index.html')
 
 
 if __name__ == '__main__':
