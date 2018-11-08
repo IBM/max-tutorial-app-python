@@ -2,7 +2,11 @@
 
 # MAX Object Detector Web App (Lite) - Python
 
-A simplified python version of the [MAX Object Detector Web App](https://github.com/IBM/MAX-Object-Detector-Web-App) for use in MAX workshops
+A simplified python version of the [MAX Object Detector Web App](https://github.com/IBM/MAX-Object-Detector-Web-App) for use in MAX workshops.
+
+This repository's default branch, `initial`, contains **TODOs** meant to be completed while following the
+[MAX Developer Tutorial](https://github.com/CODAIT/max-developer-tutorial).
+A working version of the app without the **TODOs** can be found on the `solution` branch.
 
 > This is the python version of this Web App, you can also check out the [NodeJS version](https://github.com/CODAIT/max-workshop-app-nodejs)
 
