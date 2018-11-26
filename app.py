@@ -105,7 +105,6 @@ def root():
         # encode image
         _, image_encoded = cv2.imencode('.jpg', img)
 
-        # TODO R1: review inference request payload
         # Required inference request parameter: image (JPG/PNG encoded)
         files = {
             'image': image_encoded.tostring(),
@@ -115,8 +114,7 @@ def root():
         # Optional inference parameter: threshold (default: 0.7, range [0,1])
         data = {'threshold': '0.5'}
 
-        # TODO T1: replace model URL placeholder
-        model_url = args.ml_endpoint.rstrip('/') + '**TODO**'
+        model_url = args.ml_endpoint.rstrip('/') + '/model/predict'
 
         # Send image file form to model endpoint for prediction
         try:
@@ -141,9 +139,7 @@ def root():
         # log output in debug
         logging.debug('\n' + pformat(output_data))
 
-        result = []
-        # TODO T2: uncomment next line and replace placeholder
-        # result = output_data['**TODO**']
+        result = output_data['predictions']
 
         if len(result) == 0:
             msg = 'No objects detected, try uploading a new image'
