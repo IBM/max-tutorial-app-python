@@ -26,7 +26,7 @@ from pprint import pformat
 from random import randint
 
 # setup logging
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
 
 # parse port and model endpoint args
 parser = argparse.ArgumentParser(description='MAX Object Detector (Lite)')
