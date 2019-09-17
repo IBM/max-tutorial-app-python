@@ -49,17 +49,17 @@ If you'd rather build and run the model locally, or deploy on a Kubernetes clust
 The API server automatically generates an interactive Swagger documentation page.
 Go to `http://localhost:5000` to load it. From there you can explore the API and also create test requests.
 
-Use the `model/predict` endpoint to load a test image and get predicted labels for the image from the API.
+Use the `/model/predict` endpoint to load a test image and get predicted labels for the image from the API.
 The coordinates of the bounding box are returned in the `detection_box` field, and contain the array of normalized
 coordinates (ranging from 0 to 1) in the form `[ymin, xmin, ymax, xmax]`.
 
-The [model assets folder](https://github.com/IBM/MAX-Object-Detector/tree/master/assets)
+The [model `samples` folder](https://github.com/IBM/MAX-Object-Detector/tree/master/samples)
 contains a few images you can use to test out the API, or you can use your own.
 
 You can also test it on the command line, for example:
 
 ```
-$ curl -F "image=@assets/dog-human.jpg" -XPOST http://localhost:5000/model/predict
+$ curl -F "image=@samples/dog-human.jpg" -XPOST http://localhost:5000/model/predict
 ```
 
 You should see a JSON response like that below:
@@ -97,7 +97,7 @@ You should see a JSON response like that below:
 You can also control the probability threshold for what objects are returned using the `threshold` argument like below:
 
 ```
-$ curl -F "image=@assets/dog-human.jpg" -XPOST http://localhost:5000/model/predict?threshold=0.5
+$ curl -F "image=@samples/dog-human.jpg" -XPOST http://localhost:5000/model/predict?threshold=0.5
 ```
 
 The optional `threshold` parameter is the minimum `probability` value for predicted labels returned by the model.
