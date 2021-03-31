@@ -1,5 +1,5 @@
 Flask
 requests
 numpy
-opencv-python-headless
+opencv-python
 flake8
