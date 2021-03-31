@@ -3,3 +3,4 @@ requests
 numpy
 opencv-python
 flake8
+python3-opencv
