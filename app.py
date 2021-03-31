@@ -33,7 +33,7 @@ parser = argparse.ArgumentParser(description='MAX Object Detector (Lite)')
 parser.add_argument('--port', type=int, nargs='?', default=8090,
                     help='port to run the web app on')
 parser.add_argument('--ml-endpoint', nargs='?', metavar='URL',
-                    default='http://localhost:5000', help='model api server')
+                    default='http://max-object-detector.codait-prod-41208c73af8fca213512856c7a09db52-0000.us-east.containers.appdomain.cloud/', help='model api server')
 args = parser.parse_args()
 
 app = Flask(__name__)
